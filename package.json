@@ -1,0 +1,20 @@
+{
+  "name": "blockchain-typescript-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "@types/elliptic": "^6.4.14",
+    "@types/node": "^17.0.23",
+    "crypto-js": "^4.1.1",
+    "elliptic": "^6.5.4",
+    "lowdb": "^3.0.0"
+  }
+}
