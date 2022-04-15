@@ -10,6 +10,7 @@ import {
   resetDB,
   setPendingTransactions,
 } from "./../util/db";
+import EventEmitter from "events";
 import dotenv from "dotenv";
 import path from "path";
 dotenv.config({
@@ -64,13 +65,37 @@ export class Block {
   }
 }
 
-class BlockChainClass {
-  constructor(public mongoDbConnectUrl: string) {}
+enum errorCodeType{
+
+}
+
+interface BlockChainClassEvents {
+  error: (errorCode: errorCodeType) => any;
+}
+
+declare interface BlockChainClass {
+  on<U extends keyof BlockChainClassEvents>(
+    event: U,
+    listener: BlockChainClassEvents[U]
+  ): this;
+
+  emit<U extends keyof BlockChainClassEvents>(
+    event: U,
+    ...args: Parameters<BlockChainClassEvents[U]>
+  ): boolean;
+}
+
+class BlockChainClass extends EventEmitter {
+  constructor(public mongoDbConnectUrl?: string) {
+    super();
+  }
   async init() {
-    try {
-      await connectToDB(this.mongoDbConnectUrl);
-    } catch (error) {
-      throw new Error("can not connect to mongodb");
+    if (this.mongoDbConnectUrl) {
+      try {
+        await connectToDB(this.mongoDbConnectUrl);
+      } catch (error) {
+        throw new Error("can not connect to mongodb");
+      }
     }
     if (!(await getChain()).length) {
       await this.createGenesisBlock();
@@ -145,7 +170,8 @@ const testBlock = () => {
 // testBlock()
 const testBlockChain = async () => {
   const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/";
-  const blockchain = new BlockChainClass(dbUrl);
+  connectToDB(dbUrl);
+  const blockchain = new BlockChainClass();
   resetDB();
   await blockchain.init();
   await blockchain.createTransaction(
@@ -157,6 +183,8 @@ const testBlockChain = async () => {
   await blockchain.minePendingTransactions("test");
   await blockchain.minePendingTransactions("test");
 
-  console.log(await blockchain.getBalanceOfAddress("test"));
+  console.log("test : ", await blockchain.getBalanceOfAddress("test"));
+  console.log("address1 :", await blockchain.getBalanceOfAddress("address1"));
+  console.log("address2 :", await blockchain.getBalanceOfAddress("address2"));
 };
 testBlockChain().then(console.log).catch(console.log);
