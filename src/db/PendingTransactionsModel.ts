@@ -9,6 +9,12 @@ class PendingTransactionsClass {
 
   @prop({ required: true, nullable: true })
   public amount: number;
+
+  @prop({ nullable: true })
+  public signature?: string;
+
+  @prop({ nullable: true })
+  public timestamp: number;
 }
 
 export const PendingTransactionsModel = getModelForClass(

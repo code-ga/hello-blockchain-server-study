@@ -6,6 +6,8 @@ class BlockClass {
     fromAddress: string;
     toAddress: string;
     amount: number;
+    signature?: string;
+    timestamp: number;
   }[];
   @prop()
   previousHash: string;
