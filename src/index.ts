@@ -7,37 +7,17 @@ import UserRouter from "./router/user";
 import dotenv from "dotenv";
 import path from "path";
 import { AppInfoModel } from "./db/appInfoModel";
-import { Server as SocketServer } from "socket.io";
-import { v4 as uuidV4 } from "uuid";
-import {
-  ClientToServerEvents as SocketClientToServerEvents,
-  InterServerEvents as SocketInterServerEvents,
-  ServerToClientEvents as SocketServerToClientEvents,
-  SocketData,
-} from "./types/SocketIoType";
-import SocketIoHandles from "./util/Socket";
-import TransactionsRouter from './router/transactions';
-import BlockChainRouter from './router/blockchain';
+import TransactionsRouter from "./router/transactions";
+import BlockChainRouter from "./router/blockchain";
+import net from "net";
+
 dotenv.config({
   path: path.join(__dirname, "./.env"),
 });
 
 const app = express();
 const HttpServer = createServer(app);
-const io = new SocketServer<
-  SocketClientToServerEvents,
-  SocketServerToClientEvents,
-  SocketInterServerEvents,
-  SocketData
->(HttpServer);
-
-io.engine.generateId = () => {
-  console.log("generateId");
-  return uuidV4(); // must be unique across all Socket.IO servers
-};
-
-
-SocketIoHandles(io);
+const port = process.env.PORT || 8000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -65,9 +45,7 @@ app.get("/", (req, res) => {
 app.use("/key", KeyRouter);
 app.use("/user", UserRouter);
 app.use("/transaction", TransactionsRouter);
-app.use("/blockchain", BlockChainRouter)
-
-const port = process.env.PORT || 8000;
+app.use("/blockchain", BlockChainRouter);
 
 // resetDB();
 
@@ -86,3 +64,7 @@ HttpServer.listen(port, async () => {
 app.use(function (req, res, next) {
   res.status(404).send("404 Not Found");
 });
+// const allAlphabet = [
+//   ..."abcdefghijklmnopqrstuvwxyz".toLowerCase(),
+//   ..."abcdefghijklmnopqrstuvwxyz".toUpperCase(),
+// ];

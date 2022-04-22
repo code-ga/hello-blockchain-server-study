@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd ./test && npm install && npm run test",
+    "serve": "cd ./src && nodemon index.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,8 +26,9 @@
     "lowdb": "^3.0.0",
     "mongoose": "^6.2.11",
     "morgan": "^1.10.0",
-    "socket.io": "^4.4.1",
-    "socket.io-client": "^4.4.1",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
