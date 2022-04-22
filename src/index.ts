@@ -10,6 +10,7 @@ import { AppInfoModel } from "./db/appInfoModel";
 import TransactionsRouter from "./router/transactions";
 import BlockChainRouter from "./router/blockchain";
 import { WebSocketServer } from "ws";
+import handlersWebSocket from "./util/websocket/handlers";
 
 dotenv.config({
   path: path.join(__dirname, "./.env"),
@@ -22,13 +23,8 @@ const wss = new WebSocketServer({
   server: HttpServer,
 });
 
-wss.on("connection", function connection(ws) {
-  ws.on("message", function message(data) {
-    console.log("received: %s", data);
-  });
 
-  ws.send("something");
-});
+handlersWebSocket(wss);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(
