@@ -9,6 +9,7 @@ import path from "path";
 import { AppInfoModel } from "./db/appInfoModel";
 import TransactionsRouter from "./router/transactions";
 import BlockChainRouter from "./router/blockchain";
+import { WebSocketServer } from "ws";
 
 dotenv.config({
   path: path.join(__dirname, "./.env"),
@@ -17,6 +18,17 @@ dotenv.config({
 const app = express();
 const HttpServer = createServer(app);
 const port = process.env.PORT || 8000;
+const wss = new WebSocketServer({
+  server: HttpServer,
+});
+
+wss.on("connection", function connection(ws) {
+  ws.on("message", function message(data) {
+    console.log("received: %s", data);
+  });
+
+  ws.send("something");
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(
