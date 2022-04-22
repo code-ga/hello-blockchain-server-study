@@ -9,7 +9,6 @@ import path from "path";
 import { AppInfoModel } from "./db/appInfoModel";
 import TransactionsRouter from "./router/transactions";
 import BlockChainRouter from "./router/blockchain";
-import net from "net";
 
 dotenv.config({
   path: path.join(__dirname, "./.env"),
