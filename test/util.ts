@@ -5,7 +5,12 @@ interface defaultDataType<DataT> {
   data: DataT;
   type: string;
 }
-
+/**
+ * Decode data from websocket
+ * @description Decode data from websocket
+ * @param {WebSocket.RawData} data data from websocket 
+ * @returns defaultDataType<DataT>
+ */
 export function decodeData<DataT>(data: WebSocket.RawData): defaultDataType<DataT> {
   return JSON.parse(data.toString());
 }
