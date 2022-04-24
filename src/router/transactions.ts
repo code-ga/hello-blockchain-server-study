@@ -4,7 +4,8 @@ import { blockchain } from "../util/blockChain";
 
 const TransactionsRouter = Router();
 import { ec as EC } from "elliptic";
-import { getPendingTransactions } from "../core/util/db";
+import { getLastBlock, getPendingTransactions } from "../core/util/db";
+import { BlockClass } from "./../core/Blockchain/BlockClass";
 var ec = new EC("secp256k1");
 
 TransactionsRouter.post("/create", async (req, res) => {
@@ -30,16 +31,25 @@ TransactionsRouter.post("/create", async (req, res) => {
       success: false,
     });
   });
-  blockchain.minePendingTransactions(fromAddress.getPublic("hex"));
   res.json({
     tx,
   });
 });
 
 TransactionsRouter.get("/pending", async (req, res) => {
-  const data = await getPendingTransactions();
+  const data = [...[(await getPendingTransactions())[0]]];
+  const block = new BlockClass(
+    data,
+    (await (await getLastBlock())?.hash) || ""
+  );
+  if (!block.hasValidTransactions()) {
+    res.json({
+      data: data.slice(1),
+    });
+    return;
+  }
   res.json({
-    data : [data[0]],
+    data: [data[0]],
   });
 });
 

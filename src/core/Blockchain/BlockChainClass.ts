@@ -52,6 +52,7 @@ export class BlockChainClass extends EventEmitter {
         throw new Error("can not connect to mongodb");
       }
     }
+    console.log((await getChain()).length);
     if (!(await getChain()).length) {
       await this.createGenesisBlock();
     }

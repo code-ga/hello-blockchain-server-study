@@ -11,6 +11,7 @@ import TransactionsRouter from "./router/transactions";
 import BlockChainRouter from "./router/blockchain";
 import { WebSocketServer } from "ws";
 import handlersWebSocket from "./util/websocket/handlers";
+import { blockchain } from "./util/blockChain";
 
 dotenv.config({
   path: path.join(__dirname, "./.env"),
@@ -22,7 +23,6 @@ const port = process.env.PORT || 8000;
 const wss = new WebSocketServer({
   server: HttpServer,
 });
-
 
 handlersWebSocket(wss);
 
@@ -54,8 +54,6 @@ app.use("/user", UserRouter);
 app.use("/transaction", TransactionsRouter);
 app.use("/blockchain", BlockChainRouter);
 
-// resetDB();
-
 HttpServer.listen(port, async () => {
   const AppInfo = await AppInfoModel.findOne();
   if (!AppInfo) {
@@ -64,6 +62,8 @@ HttpServer.listen(port, async () => {
     });
     await appInfo.save();
   }
+  // await resetDB();
+  await blockchain.init();
   console.log(`🚀 | Server is running on port ${port} | ✨`);
 });
 

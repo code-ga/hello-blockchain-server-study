@@ -1,5 +1,5 @@
 import { SHA256 } from "crypto-js";
-import hashConditions from "../util/hashConditions";
+import hashConditions from "./hashConditions";
 import { TransactionsClass } from "./TransactionsClass";
 
 export class BlockClass {
@@ -25,6 +25,7 @@ export class BlockClass {
     while (!this.conditions(this.hash)) {
       this.noise++;
       this.hash = this.calculateHash().toString();
+      console.log(this.hash);
     }
     return this;
   }
@@ -34,12 +35,6 @@ export class BlockClass {
         ? JSON.stringify(this.transactions)
         : this.transactions
     }|${this.noise}`;
-  }
-  public testBlock() {
-    const hashData = this.createHashData();
-    const hash = SHA256(hashData);
-    this.hash = hash.toString();
-    return hash.toString();
   }
   hasValidTransactions() {
     for (const transaction of this.transactions) {

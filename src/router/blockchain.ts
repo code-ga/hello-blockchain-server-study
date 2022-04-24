@@ -12,5 +12,12 @@ BlockChainRouter.get("/blockchain", async (req, res) => {
     });
 });
 
+BlockChainRouter.get("/lastBlock", async (req, res) => {
+    const data = await getChain();
+    res.json({
+        data: data[data.length - 1],
+    });
+});
+
 
 export default BlockChainRouter;

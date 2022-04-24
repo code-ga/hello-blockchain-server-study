@@ -1,3 +1,3 @@
-export default function hashConditions(hash: string) {
-  return hash.startsWith("0".repeat(1)) && hash.endsWith("0".repeat(1));
+export default function hashConditions(difficulty: number) {
+  return (hash: string) => hash.startsWith("0".repeat(difficulty));
 }
