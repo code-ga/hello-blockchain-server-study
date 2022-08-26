@@ -27,6 +27,9 @@ jobs:
 
       - name: Build
         run: npm run build # The build command of your project
+
+      - name: PreDeploy
+        run: sudo rm -rf .git .gitignore
     
       - name: Push
         uses: s0/git-publish-subdir-action@develop
