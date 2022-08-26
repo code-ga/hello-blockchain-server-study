@@ -1,3 +1,4 @@
+# .github/workflows/publish.yml
 name: Generate a build and push to another branch
 
 on:
@@ -8,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     name: Build and Push
     steps:
       - name: git-checkout
@@ -19,15 +19,12 @@ jobs:
 
       - name: Build
         run: npm run build # The build command of your project
-
-      - name: PreDeploy
-        run: sudo rm -rf .git .gitignore
     
       - name: Push
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
           BRANCH: build-ws # The branch name where you want to push the assets
-          FOLDER: dist/ # The directory where your assets are generated
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
+          FOLDER: build # The directory where your assets are generated
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
           MESSAGE: "Build: ({sha}) {msg}" # The commit message

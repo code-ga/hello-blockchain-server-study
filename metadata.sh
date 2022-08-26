@@ -1,2 +1,2 @@
-cp package.json dist/
-cp README.md dist/
+cp package.json build/
+cp README.md build/
