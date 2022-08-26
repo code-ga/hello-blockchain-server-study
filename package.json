@@ -6,7 +6,7 @@
   "scripts": {
     "test": "cd ./test && nodemon index.ts",
     "serve": "cd ./src && nodemon index.ts",
-    "build": "rm -rf dist/ && tsc"
+    "build": "rm -rf dist/ && tsc && sh ./metadata.sh"
   },
   "keywords": [],
   "author": "",
