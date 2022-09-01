@@ -6,7 +6,7 @@ import { BlockClass } from "./class/BlockClass";
 import { TransactionsClass } from "./class/TransactionsClass";
 import { decodeData } from "./util";
 import path from "path";
-import hashConditions from './hashConditions';
+import hashConditions from "./hashConditions";
 // equal object
 const equalObject = (obj1: any[], obj2: any[]) => {
   if (obj1.length != obj2.length) {
@@ -76,7 +76,10 @@ const main = async () => {
           timestamp: number;
         }[] = (
           await axios.get(
-            `https://${decodeData<string>(SocketData).data.replace("{host}", host)}`
+            `https://${decodeData<string>(SocketData).data.replace(
+              "{host}",
+              host
+            )}`
           )
         ).data.data;
 
@@ -100,7 +103,11 @@ const main = async () => {
           transactionsArray,
           lastBlock.data.data?.hash || "",
           hashConditions(
-            Number(await(await axios.get(`https://${host}/info`)).data.hashLevel)
+            Number(
+              await (
+                await axios.get(`https://${host}/info`)
+              ).data.hashLevel
+            )
           )
         );
         if (!block.hasValidTransactions()) {
@@ -108,11 +115,13 @@ const main = async () => {
           console.log("invalid transaction");
           break;
         }
-        block.mining();
-        sendData(ws, "successMining", {
-          hash: block.hash,
-          noise: block.noise,
-        });
+        block.mining(onHashSuccess.isTrue);
+        if (!onHashSuccess.isTrue) {
+          sendData(ws, "successMining", {
+            hash: block.hash,
+            noise: block.noise,
+          });
+        }
         break;
       case "getChain":
         ///@ts-ignore

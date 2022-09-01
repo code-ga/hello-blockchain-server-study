@@ -21,8 +21,8 @@ export class BlockClass {
     const hash = SHA256(hashData);
     return hash;
   }
-  public mining() {
-    while (!this.conditions(this.hash)) {
+  public mining(breakFunc = false) {
+    while (!this.conditions(this.hash) && !breakFunc) {
       this.noise++;
       this.hash = this.calculateHash().toString();
       console.log(this.hash);
