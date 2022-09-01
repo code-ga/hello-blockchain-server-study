@@ -1,26 +1,15 @@
-name: Build
+name: Build-ts-to-js
 on: 
-    push:
-        paths:
-            - "**.ts"
-            - "**.json"
-        branches:
-            - ws
+  push:
+    paths:
+      - "**.ts"
+      - "**.json"
+    branches:
+      - ws
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps: 
-            - name: Checkout project
-              uses: actions/checkout@v2
-            - name: Setup Node.js
-              uses: actions/setup-node@v2.1.4
-              with:
-                node-version: 16
-            - name: Build and push
-              uses: alexthemaster/action-build-typescript@v. # check the releases tab on the right for versions (looks like this: v1.0.0)
-              # use this if you want the sharpest of cutting edges (can and probably WILL break from time to time)
-              # uses: alexthemaster/action-build-typescript@master
-              with:
-                pushToBranch: true # optional; can either be true or false | defaults to false
-                branch: 'build-ws' # optional; the name of the branch the action should push the compiled code to | defaults to dist
-                githubToken: ${{ secrets.GITHUB_TOKEN }} # required if you use the pushToBranch option
+  build-ts-to-js:
+    run-on: ubuntu-latest
+    steps:
+      - name: hello world
+        run : echo "hello word"
+    
