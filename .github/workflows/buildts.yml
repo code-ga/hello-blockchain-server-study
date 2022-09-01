@@ -4,6 +4,7 @@ on:
     paths:
       - "**.ts"
       - "**.json"
+      - "**.yml"
     branches:
       - ws
 jobs:
