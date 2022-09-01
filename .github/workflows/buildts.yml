@@ -9,7 +9,7 @@ on:
       - ws
 jobs:
   build-ts-to-js:
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: hello world
         run : echo "hello word"
