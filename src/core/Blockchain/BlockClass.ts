@@ -1,4 +1,5 @@
 import { SHA256 } from "crypto-js";
+import { hashLevel } from "../../env";
 import hashConditions from "../util/hashConditions";
 import { TransactionsClass } from "./TransactionsClass";
 
@@ -9,7 +10,7 @@ export class BlockClass {
     public transactions: TransactionsClass[],
     public previousHash = "",
     public timestamp = Date.now(),
-    public conditions: (hash: string) => boolean = hashConditions(5)
+    public conditions: (hash: string) => boolean = hashConditions(hashLevel)
   ) {
     this.noise = 0;
     this.hash = "";

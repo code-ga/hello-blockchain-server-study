@@ -12,6 +12,7 @@ import BlockChainRouter from "./router/blockchain";
 import { WebSocketServer } from "ws";
 import handlersWebSocket from "./util/websocket/handlers";
 import { blockchain } from "./util/blockChain";
+import { hashLevel } from "./env";
 
 dotenv.config({
   path: path.join(__dirname, "./.env"),
@@ -53,6 +54,11 @@ app.use("/key", KeyRouter);
 app.use("/user", UserRouter);
 app.use("/transaction", TransactionsRouter);
 app.use("/blockchain", BlockChainRouter);
+app.get("/info", (req, res) => {
+  res.json({
+    hashLevel,
+  });
+})
 
 HttpServer.listen(port, async () => {
   const AppInfo = await AppInfoModel.findOne();

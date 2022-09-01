@@ -1,10 +1,12 @@
 import axios from "axios";
 import fs from "fs";
 import WebSocket from "ws";
-import { sendData } from "./../src/util/websocket/util";
-import { BlockClass } from "./BlockClass";
-import { TransactionsClass } from "./TransactionsClass";
+import { sendData } from "./util";
+import { BlockClass } from "./class/BlockClass";
+import { TransactionsClass } from "./class/TransactionsClass";
 import { decodeData } from "./util";
+import path from "path";
+import hashConditions from './hashConditions';
 // equal object
 const equalObject = (obj1: any[], obj2: any[]) => {
   if (obj1.length != obj2.length) {
@@ -18,16 +20,17 @@ const equalObject = (obj1: any[], obj2: any[]) => {
   return true;
 };
 const main = async () => {
-  const ws = new WebSocket("ws://127.0.0.1:8000/", {
+  const host = "hello-blockchain-server-study.tritranduc.repl.co";
+  const ws = new WebSocket("wss://" + host + "/", {
     perMessageDeflate: false,
   });
   let onHashSuccess = {
     isTrue: false,
   };
   const MyPublicKey =
-      "04ae21d99cf0b80a4531fe53e7f258ff1b3c9b35ae9c340b29aa25292fe8fbcb53d5fbb23eca0dd290a0cae707aeba76e21906e3de5f8407081e56918513f08d39",
+      "04ec668e501b0c2d7067244463ffeea856f1e97938400bda929b0ca5c572016c448727240c6b75bfce0a4801cbbec0d7855b11f3399ad310426475c0ef9dc3a212",
     MyPrivateKey =
-      "4cf5e2bc455c65b8ea643575f50e262e0b6ba18c7e2cd0445f2bfa5dba477ba1";
+      "5b960c501936f6b7080839240b5b94b8d8792faec018d1c47f610801b0bf5936";
 
   ws.on("open", function open() {
     console.log("connected");
@@ -44,10 +47,14 @@ const main = async () => {
         break;
       case "startMining":
         onHashSuccess.isTrue = false;
-        const chain = [...JSON.parse(fs.readFileSync("./chain.json", "utf-8"))];
+        const chain = [
+          ...JSON.parse(
+            fs.readFileSync(path.join(__dirname, "./chain.json"), "utf-8")
+          ),
+        ];
 
         const serverChain = [
-          ...(await axios.get("http://localhost:8000/blockchain/blockchain"))
+          ...(await axios.get("https://" + host + "/blockchain/blockchain"))
             .data.data,
         ];
         if (
@@ -69,14 +76,12 @@ const main = async () => {
           timestamp: number;
         }[] = (
           await axios.get(
-            decodeData<string>(SocketData).data.replace(
-              "{host}",
-              "http://localhost:8000"
-            )
+            `https://${decodeData<string>(SocketData).data.replace("{host}", host)}`
           )
         ).data.data;
+
         const lastBlock = await axios.get(
-          "http://localhost:8000/blockchain/lastBlock"
+          "https://" + host + "/blockchain/lastBlock"
         );
         const transactionsArray = transactionData.map((transaction) => {
           return new TransactionsClass(
@@ -93,7 +98,10 @@ const main = async () => {
         console.log(lastBlock.data);
         const block = new BlockClass(
           transactionsArray,
-          lastBlock.data.data?.hash || ""
+          lastBlock.data.data?.hash || "",
+          hashConditions(
+            Number(await(await axios.get(`https://${host}/info`)).data.hashLevel)
+          )
         );
         if (!block.hasValidTransactions()) {
           sendData(ws, "InvalidTransactions", {});
@@ -107,6 +115,7 @@ const main = async () => {
         });
         break;
       case "getChain":
+        ///@ts-ignore
         sendData(ws, "Chain", chain);
         break;
       case "HashNotEqual":
@@ -115,10 +124,13 @@ const main = async () => {
       case "successMining":
         onHashSuccess.isTrue = true;
         const newChain = (
-          await axios.get("http://localhost:8000/blockchain/blockchain")
+          await axios.get("https://" + host + "/blockchain/blockchain")
         ).data.data;
         // write new chain to file
-        fs.writeFileSync("./chain.json", JSON.stringify(newChain));
+        fs.writeFileSync(
+          path.join(__dirname, "./chain.json"),
+          JSON.stringify(newChain)
+        );
 
         sendData(ws, "startMining", true);
         break;
