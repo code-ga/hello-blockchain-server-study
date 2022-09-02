@@ -28,9 +28,10 @@ const main = async () => {
     isTrue: false,
   };
   const MyPublicKey =
-      "04ec668e501b0c2d7067244463ffeea856f1e97938400bda929b0ca5c572016c448727240c6b75bfce0a4801cbbec0d7855b11f3399ad310426475c0ef9dc3a212",
-    MyPrivateKey =
-      "5b960c501936f6b7080839240b5b94b8d8792faec018d1c47f610801b0bf5936";
+    "04ec668e501b0c2d7067244463ffeea856f1e97938400bda929b0ca5c572016c448727240c6b75bfce0a4801cbbec0d7855b11f3399ad310426475c0ef9dc3a212";
+  const nodeInfo = {
+    nodeId: "",
+  };
 
   ws.on("open", function open() {
     console.log("connected");
@@ -102,6 +103,10 @@ const main = async () => {
         const block = new BlockClass(
           transactionsArray,
           lastBlock.data.data?.hash || "",
+          {
+            MinerPublicKey: MyPublicKey,
+            nodeId: nodeInfo.nodeId,
+          },
           hashConditions(
             Number(
               await (
@@ -142,6 +147,9 @@ const main = async () => {
         );
 
         sendData(ws, "startMining", true);
+        break;
+      case "NodeId":
+        nodeInfo.nodeId = decodeData<string>(SocketData).data;
         break;
       default:
         console.log(`${emitName} ${data}`);

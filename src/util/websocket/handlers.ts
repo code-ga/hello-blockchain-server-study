@@ -19,7 +19,7 @@ export interface WSType extends WebSocket.WebSocket {
 const MiningData: {
   [clientId: string]: {
     connected: boolean;
-    MinerPublicKey?: string;
+    MinerPublicKey: string;
   };
 } = {};
 
@@ -52,6 +52,7 @@ export default async function handlersWebSocket(
             MinerPublicKey: data,
           };
           sendData(ws, "MinerPublicKeySuccess", true);
+          sendData(ws, "NodeId", ws.id);
           break;
         case "startMining":
           sendData(ws, "startMining", "{host}/transaction/pending");
@@ -62,7 +63,12 @@ export default async function handlersWebSocket(
           ];
           const block = new BlockClass(
             PendingTransactionsData,
-            (await (await getLastBlock())?.hash) || ""
+            (await getLastBlock())?.hash || "",
+            PendingTransactionsData[0].timestamp,
+            {
+              MinerPublicKey: MiningData[ws.id].MinerPublicKey,
+              nodeId: ws.id,
+            }
           );
           if (!block.hasValidTransactions()) {
             console.log("invalid transaction");

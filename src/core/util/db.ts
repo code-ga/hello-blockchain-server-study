@@ -27,7 +27,11 @@ export const getChain = async (): Promise<BlockClass[]> => {
     const block = new BlockClass(
       transactions,
       blockDB.previousHash,
-      blockDB.timestamp
+      blockDB.timestamp,
+      {
+        MinerPublicKey: blockDB.MinerPublicKey,
+        nodeId: blockDB.nodeId,
+      }
     );
     block.noise = blockDB.noise;
     block.mining();
@@ -56,6 +60,8 @@ export const addBlockToChain = async (block: BlockClass) => {
     timestamp: block.timestamp,
     noise: block.noise,
     hash: block.hash,
+    MinerPublicKey: block.Metadata.MinerPublicKey,
+    nodeId: block.Metadata.nodeId,
   }).save();
 };
 
@@ -80,7 +86,11 @@ export const getLastBlock = async (): Promise<
     const block = new BlockClass(
       transactions,
       blockDB.previousHash,
-      blockDB.timestamp
+      blockDB.timestamp,
+      {
+        MinerPublicKey: blockDB.MinerPublicKey,
+        nodeId: blockDB.nodeId,
+      }
     );
     block.noise = blockDB.noise;
     block.mining();

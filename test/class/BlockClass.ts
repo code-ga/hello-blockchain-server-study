@@ -2,14 +2,20 @@ import { SHA256 } from "crypto-js";
 import hashConditions from "../hashConditions";
 import { TransactionsClass } from "./TransactionsClass";
 
+export interface IMetadata {
+  MinerPublicKey: string;
+  nodeId: string;
+}
+
 export class BlockClass {
   public noise: number;
   hash: string;
   constructor(
     public transactions: TransactionsClass[],
     public previousHash = "",
+    public Metadata: IMetadata,
     public conditions: (hash: string) => boolean = hashConditions(5),
-    public timestamp = Date.now(),
+    public timestamp = Date.now()
   ) {
     this.noise = 0;
     this.hash = "";
@@ -34,7 +40,11 @@ export class BlockClass {
       typeof this.transactions == "object"
         ? JSON.stringify(this.transactions)
         : this.transactions
-    }|${this.noise}`;
+    }|${this.noise}|${
+      typeof this.Metadata == "object"
+        ? JSON.stringify(this.Metadata)
+        : this.Metadata
+    }`;
   }
   hasValidTransactions() {
     for (const transaction of this.transactions) {

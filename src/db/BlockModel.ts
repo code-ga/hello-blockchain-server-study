@@ -17,6 +17,16 @@ class BlockClass {
   noise: number;
   @prop({ required: true })
   hash: string;
+
+  @prop({ required: true })
+  MinerPublicKey: string;
+  @prop({ required: true })
+  nodeId: string;
+}
+
+export interface IMetadata {
+  MinerPublicKey: string;
+  nodeId: string;
 }
 
 export const BlockModel = getModelForClass(BlockClass);

@@ -2,6 +2,7 @@ import { SHA256 } from "crypto-js";
 import { hashLevel } from "../../env";
 import hashConditions from "../util/hashConditions";
 import { TransactionsClass } from "./TransactionsClass";
+import { IMetadata } from "../../db/BlockModel";
 
 export class BlockClass {
   public noise: number;
@@ -10,6 +11,7 @@ export class BlockClass {
     public transactions: TransactionsClass[],
     public previousHash = "",
     public timestamp = Date.now(),
+    public Metadata: IMetadata,
     public conditions: (hash: string) => boolean = hashConditions(hashLevel)
   ) {
     this.noise = 0;
@@ -34,7 +36,11 @@ export class BlockClass {
       typeof this.transactions == "object"
         ? JSON.stringify(this.transactions)
         : this.transactions
-    }|${this.noise}`;
+    }|${this.noise}|${
+      typeof this.Metadata == "object"
+        ? JSON.stringify(this.Metadata)
+        : this.Metadata
+    }`;
   }
   public testBlock() {
     const hashData = this.createHashData();
