@@ -4,6 +4,7 @@ import {
   addBlockToChain,
   getLastBlock,
   getPendingTransactions,
+  setPendingTransactions,
 } from "../../core/util/db";
 import { broadcast, decodeData, sendData } from "./util";
 import {
@@ -83,7 +84,7 @@ export default async function handlersWebSocket(
             sendData(ws, "HashNotEqual", {});
           } else {
             await addBlockToChain(block);
-            await deleteFirstPendingTransaction();
+            await setPendingTransactions([])
             addPendingTransaction(
               new TransactionsClass(
                 null,

@@ -37,7 +37,7 @@ TransactionsRouter.post("/create", async (req, res) => {
 });
 
 TransactionsRouter.get("/pending", async (req, res) => {
-  const data = [...[(await getPendingTransactions())[0]]];
+  const data = [...(await getPendingTransactions())];
   const block = new BlockClass(
     data,
     (await (await getLastBlock())?.hash) || ""

@@ -132,3 +132,4 @@ dist
 package-look.json
 yarn.look
 build/
+chain.json
