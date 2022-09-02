@@ -44,7 +44,7 @@ TransactionsRouter.get("/pending", async (req, res) => {
   );
   if (!block.hasValidTransactions()) {
     res.json({
-      data: data.slice(1),
+      data: data,
     });
     return;
   }
