@@ -11,7 +11,10 @@ export class BlockClass {
     public transactions: TransactionsClass[],
     public previousHash = "",
     public timestamp = Date.now(),
-    public Metadata: IMetadata,
+    public Metadata: IMetadata = {
+      MinerPublicKey: "",
+      nodeId: "",
+    },
     public conditions: (hash: string) => boolean = hashConditions(hashLevel)
   ) {
     this.noise = 0;

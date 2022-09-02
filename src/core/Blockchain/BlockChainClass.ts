@@ -74,7 +74,17 @@ export class BlockChainClass extends EventEmitter {
       .length;
     if (!(await getPendingTransactions()).length) return;
     for (const i of await getPendingTransactions()) {
-      const block = new BlockClass([i]);
+      const block = new BlockClass(
+        [i],
+        await (
+          await getLastBlock()
+        ).hash,
+        i.timestamp,
+        {
+          MinerPublicKey: miningRewardAddress,
+          nodeId: "",
+        }
+      );
       block.previousHash = (await getLastBlock())?.hash || "";
       block.mining();
       await addBlockToChain(block);
@@ -146,9 +156,15 @@ export class BlockChainClass extends EventEmitter {
 // test playground
 const testBlock = () => {
   console.time("Hash");
-  const genesisBlock = new BlockClass([
-    new TransactionsClass("", "", 0, Date.now()),
-  ]);
+  const genesisBlock = new BlockClass(
+    [new TransactionsClass("", "", 0, Date.now())],
+    "",
+    Date.now(),
+    {
+      MinerPublicKey: "",
+      nodeId: "",
+    }
+  );
   genesisBlock.mining();
   console.timeEnd("Hash");
 };
