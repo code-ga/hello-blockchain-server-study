@@ -33,7 +33,7 @@ export const getUuid = (): string => {
 };
 
 export default async function handlersWebSocket(
-  wss: WebSocket.Server<WebSocket.WebSocket>
+  wss: WebSocket.Server<typeof WebSocket.WebSocket>
 ) {
   wss.on("connection", async function connection(ws: WSType) {
     ws.id = getUuid();
