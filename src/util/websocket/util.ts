@@ -21,7 +21,7 @@ export const sendData = <T>(
 };
 
 export const broadcast = (
-  wss: WebSocket.Server<WebSocket.WebSocket>,
+  wss: WebSocket.Server<typeof WebSocket.WebSocket>,
   ws: WSType,
   emitName: string,
   data: any,
